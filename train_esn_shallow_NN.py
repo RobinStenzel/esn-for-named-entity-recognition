@@ -288,7 +288,7 @@ tag_dictionary = pickle.load(open(save_loc + "/tag_dictionary.p", "rb"))
 embedding_size = train_sentence_features_targets[0][0].size(1)
 
 # now, we will train a NN model using these embeddings as they already have the context
-model = Model(n_inputs=embedding_size, n_outputs=len(tag_dictionary), layerConfig=[], dropout=0)
+model = Model(n_inputs=embedding_size, n_outputs=len(tag_dictionary), layerConfig=[1000], dropout=0.5)
 model = model.cuda(device)
 
 result = train(model, train_sentence_features_targets, batch_size=10, lr=0.1, weight_decay=1e-5, momentum=0.9,

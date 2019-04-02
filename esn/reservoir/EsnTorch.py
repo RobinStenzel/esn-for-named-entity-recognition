@@ -226,74 +226,7 @@ class EsnWrapper():
 
         return esn_embedded_train_sentence_features_targets
 
-    def eval(self, sentences):
-        # for each sentence
-        batch_predicted_list = []
-        batch_gold_list = []
-        for sentence in sentences:
-
-            # split into inputs and targets
-            token_embeddings, token_targets = sentence
-
-            # for each token
-            for j in range(len(token_embeddings)):
-                # variables for input and output
-                input = token_embeddings[j].type(torch.float32)
-
-                # forward pass
-                output = self.model(input)
-                max_score, predicted_tag = output.max(0)
-                gold_tag = token_targets[j]
-
-                batch_predicted_list.append(predicted_tag)
-                batch_gold_list.append(gold_tag)
-
-        return batch_gold_list, batch_predicted_list
-
-    def evalFlair(self, sentences, tag_dictionary):
-        # for each sentence
-        tags = []
-        loss_batch = 0
-        for sentence in sentences:
-            tag_seq = []
-            confidences = []
-
-            # reset states
-            self.model.reset_states()
-
-            # reset gradients
-            self.optimizer.zero_grad()
-
-            # split into inputs and targets
-            token_embeddings, token_targets = sentence
-
-            # for each token
-            for j in range(len(token_embeddings)):
-                # variables for input and output
-                input = token_embeddings[j].type(torch.float32)
-                target = torch.tensor(token_targets[j]).view(1, -1)
-                target = torch.squeeze(target, dim=0)
-
-                # forward pass
-                output = self.model(input)
-                max_score, predicted_tag = output.max(0)
-
-                output = output.view(1, -1)
-
-                # compute loss
-                loss = self.loss_function(output, target)
-
-                # backward pass
-                loss.backward()
-                loss_batch += (loss.data.numpy() / len(token_embeddings))
-
-                tag_seq.append(predicted_tag)
-                confidences.append(round(max_score[0].item(), 2))
-
-            tags.append([Label(tag_dictionary.get_item_for_index(tag), conf)
-                         for tag, conf in zip(tag_seq, confidences)])
-
-        return tags, loss_batch / len(sentences)
+    
 
     def predict(self, input):
         output = self.model.forward(input)

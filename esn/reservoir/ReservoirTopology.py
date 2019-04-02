@@ -25,8 +25,6 @@ class RandomInputTopology:
         self.reservoirSize = reservoirSize
         self.inputConnectivity = inputConnectivity
         self.connMatrix = None
-        print("use seeding for consistent training results")
-        np.random.seed(0)
 
     def generateConnectivityMatrix(self):
         connectivity = np.zeros((self.reservoirSize, self.inputSize))
@@ -47,8 +45,6 @@ class RandomReservoirTopology:
         self.size = size
         self.connectivity = connectivity
         self.connectivityMatrix = np.zeros((self.size, self.size))
-        print("use seeding for consistent training results")
-        np.random.seed(0)
 
         for i in range(self.size):
             indices = np.random.choice(self.size, size=int(np.ceil(self.connectivity * self.size)), replace=False)

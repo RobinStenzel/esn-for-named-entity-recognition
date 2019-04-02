@@ -21,8 +21,9 @@ tag_dictionary = corpus.make_tag_dictionary(tag_type=tag_type)
 # initialize embeddings
 embedding_types: List[TokenEmbeddings] = [
     WordEmbeddings('de'),
-    FlairEmbeddings('german-forward'),
-    FlairEmbeddings('german-backward'),
+    #uncomment to use Flair embeddings
+    #FlairEmbeddings('german-forward'),
+    #FlairEmbeddings('german-backward'),
 ]
 
 embeddings: StackedEmbeddings = StackedEmbeddings(embeddings=embedding_types)
@@ -32,12 +33,12 @@ embeddings: StackedEmbeddings = StackedEmbeddings(embeddings=embedding_types)
 from flair.models import SequenceTagger
 print("embeddings length {}".format(embeddings.embedding_length))
 
-tagger: SequenceTagger = SequenceTagger(hidden_size=embeddings.embedding_length,
+tagger: SequenceTagger = SequenceTagger(hidden_size=2048,
                                         embeddings=embeddings,
                                         tag_dictionary=tag_dictionary,
                                         tag_type=tag_type,
-                                        use_crf=True,
-                                        use_rnn=False)
+                                        use_crf=False,
+                                        use_rnn=True)
 
 # initialize trainer
 from flair.trainers import ModelTrainer

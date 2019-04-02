@@ -111,7 +111,7 @@ def getFeaturesAndTargets(list_of_sentences, embeddings, tag_dictionary):
 
 def save_embeddings_in_json_folder(json_path: object, tag_dictionary: object, train: object, dev: object,
                                    test: object) -> object:
-    save_loc = "savedModels/esn_embeddings/{}".format(json_path[:-5])
+    save_loc = "saved_esn_embeddings/{}".format(json_path[:-5])
 
     # create folder for json and corresponding output
     try:
@@ -134,7 +134,7 @@ json_path = sys.argv[1]
 parameters = json.load(open(json_path))
 
 # 1. get the corpus
-corpus: TaggedCorpus = NLPTaskDataFetcher.load_corpus(NLPTask.GERMEVAL, base_path='resources/tasks')
+corpus: TaggedCorpus = NLPTaskDataFetcher.load_corpus(NLPTask.GERMEVAL, base_path='resources/tasks/')
 
 # 2. what tag do we want to predict?
 tag_type = 'ner'
@@ -145,6 +145,7 @@ tag_dictionary = corpus.make_tag_dictionary(tag_type=tag_type)
 # initialize embeddings
 embedding_types: List[TokenEmbeddings] = [
     WordEmbeddings('de'),
+    # uncomment to test Flair Embeddings
     # FlairEmbeddings('german-forward'),
     # FlairEmbeddings('german-backward'),
 ]
@@ -163,19 +164,6 @@ batches = [train_data[x:x + mini_batch_size] for x in range(0, len(train_data), 
 
 # Train an echo state network
 
-
-# parameters = {}
-# parameters["size"] = 500
-# parameters["initial_transient"] = 0
-# parameters["reg_factor"] = 1e-4
-# parameters["leaking_rate"] = 0.3
-# parameters["spectral_radius"] = 0.79
-# parameters["input_connectivity"] = 0.5
-# parameters["reservoir_connectivity"] = 0.5
-# parameters["input_scaling"] = 0.5
-# parameters["reservoir_scaling"] = 0.5
-# parameters["epochs"] = 1
-# parameters["batch_size"] = 64
 parameters["bidirectional"] = True
 parameters["pooling_hidden_states"] = False
 parameters["jaeger_kernel_trick"] = False
@@ -193,10 +181,12 @@ res = ESN.EsnWrapper(parameters=parameters,
 
 number_of_epochs = parameters["epochs"]
 
+log("Preprocess data corpus for train, dev and test")
 train_sentence_features_targets = getFeaturesAndTargets(corpus.train, embeddings, tag_dictionary)
 dev_sentence_features_targets = getFeaturesAndTargets(corpus.dev, embeddings, tag_dictionary)
 test_sentence_features_targets = getFeaturesAndTargets(corpus.test, embeddings, tag_dictionary)
 
+log("Create contextual word embedding for train, dev and test")
 train_sentence_features_targets = res.embed_sentence(train_sentence_features_targets)
 dev_sentence_features_targets = res.embed_sentence(dev_sentence_features_targets)
 test_sentence_features_targets = res.embed_sentence(test_sentence_features_targets)
