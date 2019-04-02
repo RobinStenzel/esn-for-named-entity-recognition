@@ -1,1 +1,2 @@
-# esn-for-named-entity-recognition
+# NERwithESN
+Using Echo State Networks for Named Entity Recognition
