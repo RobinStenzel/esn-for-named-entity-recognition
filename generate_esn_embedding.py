@@ -11,7 +11,7 @@ import torch
 # use flair to read in data and for generating flair embeddings
 from flair.data import TaggedCorpus, Sentence
 from flair.data_fetcher import NLPTaskDataFetcher, NLPTask
-from flair.embeddings import TokenEmbeddings, WordEmbeddings, StackedEmbeddings
+from flair.embeddings import TokenEmbeddings, WordEmbeddings, StackedEmbeddings, FlairEmbeddings
 # plots
 from tqdm import tqdm
 
@@ -146,8 +146,8 @@ tag_dictionary = corpus.make_tag_dictionary(tag_type=tag_type)
 embedding_types: List[TokenEmbeddings] = [
     WordEmbeddings('de'),
     # uncomment to test Flair Embeddings
-    # FlairEmbeddings('german-forward'),
-    # FlairEmbeddings('german-backward'),
+    FlairEmbeddings('german-forward'),
+    FlairEmbeddings('german-backward'),
 ]
 
 embeddings: StackedEmbeddings = StackedEmbeddings(embeddings=embedding_types)
@@ -169,7 +169,7 @@ parameters["pooling_hidden_states"] = False
 parameters["jaeger_kernel_trick"] = False
 
 # select the device based on availability
-useGPU = False
+useGPU = True
 device = "cuda:0" if torch.cuda.is_available() and useGPU else "cpu"
 
 res = ESN.EsnWrapper(parameters=parameters,
@@ -181,12 +181,12 @@ res = ESN.EsnWrapper(parameters=parameters,
 
 number_of_epochs = parameters["epochs"]
 
-log("Preprocess data corpus for train, dev and test")
+print("Preprocess data corpus for train, dev and test")
 train_sentence_features_targets = getFeaturesAndTargets(corpus.train, embeddings, tag_dictionary)
 dev_sentence_features_targets = getFeaturesAndTargets(corpus.dev, embeddings, tag_dictionary)
 test_sentence_features_targets = getFeaturesAndTargets(corpus.test, embeddings, tag_dictionary)
 
-log("Create contextual word embedding for train, dev and test")
+print("Create contextual word embedding for train, dev and test")
 train_sentence_features_targets = res.embed_sentence(train_sentence_features_targets)
 dev_sentence_features_targets = res.embed_sentence(dev_sentence_features_targets)
 test_sentence_features_targets = res.embed_sentence(test_sentence_features_targets)
