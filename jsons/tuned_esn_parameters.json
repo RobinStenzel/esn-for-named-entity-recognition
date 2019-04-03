@@ -1,0 +1,13 @@
+{
+  "epochs": 1,
+  "batch_size": 64,
+  "size": 4396,
+  "initial_transient": 0,
+  "reg_factor": 0.0001,
+  "leaking_rate": 0.75,
+  "spectral_radius": 0.7,
+  "input_connectivity": 0.5,
+  "reservoir_connectivity": 0.5,
+  "input_scaling": 0.25,
+  "reservoir_scaling": 0.5
+}
