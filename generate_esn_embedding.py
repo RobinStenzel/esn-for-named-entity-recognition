@@ -146,8 +146,8 @@ tag_dictionary = corpus.make_tag_dictionary(tag_type=tag_type)
 embedding_types: List[TokenEmbeddings] = [
     WordEmbeddings('de'),
     # uncomment to test Flair Embeddings
-    FlairEmbeddings('german-forward'),
-    FlairEmbeddings('german-backward'),
+    #FlairEmbeddings('german-forward'),
+    #FlairEmbeddings('german-backward'),
 ]
 
 embeddings: StackedEmbeddings = StackedEmbeddings(embeddings=embedding_types)

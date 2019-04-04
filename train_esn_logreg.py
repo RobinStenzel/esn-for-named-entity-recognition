@@ -291,8 +291,8 @@ embedding_size = train_sentence_features_targets[0][0].size(1)
 model = Model(n_inputs=embedding_size, n_outputs=len(tag_dictionary), layerConfig=[], dropout=0)
 model = model.cuda(device)
 
-result = train(model, train_sentence_features_targets, batch_size=10, lr=0.1, weight_decay=1e-5, momentum=0.9,
-               epochs=500, device=device, log_every=5)
+result = train(model, train_sentence_features_targets, batch_size=32, lr=0.1, weight_decay=1e-5, momentum=0.9,
+               epochs=150, device=device, log_every=5)
 
 
 print(result)

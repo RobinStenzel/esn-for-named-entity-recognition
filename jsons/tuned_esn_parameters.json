@@ -1,7 +1,7 @@
 {
   "epochs": 1,
   "batch_size": 64,
-  "size": 4396,
+  "size": 2048,
   "initial_transient": 0,
   "reg_factor": 0.0001,
   "leaking_rate": 0.75,
